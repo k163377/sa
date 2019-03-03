@@ -37,14 +37,16 @@ class SAIS_KT : SuffixArray() {
         val isS = BooleanArray(N)
         val nS = makeS(input.toList(), isS) //isSの初期化とSのカウント
 
-        var n = 0
-        if (nS > 1) {
+        val n = if (nS > 1) {
             // step 1
             sort(input, sa, K, N, isS)
 
             // step 2
-            n = step2(input, sa, N, isS)
-        } else sa[n++] = N - 1
+            step2(input, sa, N, isS)
+        } else {
+            sa[0] = N - 1
+            1
+        }
 
         // step 3
         sort(input, sa, K, n, isS)
