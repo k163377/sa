@@ -11,7 +11,7 @@ class SAIS_KT : SuffixArray() {
     }
 
     //isSの初期化とSのカウント
-    private fun makeS(input: List<Int>): Pair<Int, List<Boolean>> {
+    private fun judgeS(input: List<Int>): Pair<Int, List<Boolean>> {
         val temp = generateSequence(Triple(true, 1, input.size - 2)) { (before, nS, i) ->
             val flag = input[i] < input[i + 1] || input[i] == input[i + 1] && before
             Triple(flag, if (flag) nS + 1 else nS, i - 1)
@@ -21,7 +21,7 @@ class SAIS_KT : SuffixArray() {
     }
 
     //isLMSの初期化とLMSのカウント
-    private fun makeLMS(isS: List<Boolean>): Pair<Int, List<Boolean>> {
+    private fun judgeLMS(isS: List<Boolean>): Pair<Int, List<Boolean>> {
         val temp = generateSequence(Triple(isS[0], if (isS[0]) 1 else 0, 1)) { (_, count, i) ->
             val flag = isS[i] && !isS[i - 1]
             Triple(flag, if (flag) count + 1 else count, i + 1)
@@ -89,14 +89,14 @@ class SAIS_KT : SuffixArray() {
 
     private fun rec(input: List<Int>, sa: IntArray, N: Int, K: Int): IntArray {
         // determine L or S and count
-        val (nS, isS) = makeS(input)
+        val (nS, isS) = judgeS(input)
 
         val n = if (nS > 1) {
             // step 1
             sort(input, sa, K, N, isS)
 
             // step 2
-            val (n, isLMS) = makeLMS(isS)
+            val (n, isLMS) = judgeLMS(isS)
 
             // renumber
             val lms = renumber(sa, N, n, isLMS)
