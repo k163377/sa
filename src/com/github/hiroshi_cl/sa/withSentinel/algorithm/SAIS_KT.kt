@@ -12,14 +12,13 @@ class SAIS_KT : SuffixArray() {
     }
 
     //isSの初期化とSのカウント
-    private fun makeS(input: List<Int>, isS: BooleanArray): Int {
-        isS[isS.lastIndex] = true
-        var nS = 1
-        for (i in isS.size - 2 downTo 0) {
-            isS[i] = input[i] < input[i + 1] || input[i] == input[i + 1] && isS[i + 1]
-            if (isS[i]) nS++
-        }
-        return nS
+    private fun makeS(input: List<Int>): Pair<Int, List<Boolean>> {
+        val temp = generateSequence(Triple(true, input.size - 2, 1)) { (before, i, nS) ->
+            val flag = input[i] < input[i + 1] || input[i] == input[i + 1] && before
+            Triple(flag, i - 1, if (flag) nS + 1 else nS )
+        }.take(input.size).toList().asReversed()
+
+        return Pair(temp.first().third, temp.map { it.first })
     }
 
     //isLMSの初期化とカウント
@@ -103,10 +102,7 @@ class SAIS_KT : SuffixArray() {
 
     private fun rec(input: IntArray, sa: IntArray, N: Int, K: Int): IntArray {
         // determine L or S and count
-        //val (nS, isS) = makeS(input.toList())
-        val temp = BooleanArray(N)
-        val nS = makeS(input.toList(), temp)
-        val isS = temp.toList()
+        val (nS, isS) = makeS(input.toList())
 
         val n = if (nS > 1) {
             // step 1
