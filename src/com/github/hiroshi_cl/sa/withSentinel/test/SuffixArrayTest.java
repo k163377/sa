@@ -55,8 +55,8 @@ public class SuffixArrayTest {
 		this.input = (input + '\0').toCharArray();
 	}
 
-	@Rule
-	public static final Timeout timeout = new Timeout(TimeOutShort);
+	/*@Rule
+	public static final Timeout timeout = new Timeout(TimeOutShort);*/
 
 	@Theory
 	public void theory() {
