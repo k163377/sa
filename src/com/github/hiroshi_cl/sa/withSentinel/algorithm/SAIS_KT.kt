@@ -15,9 +15,9 @@ class SAIS_KT : SuffixArray() {
         val temp = generateSequence(Triple(true, 1, input.size - 2)) { (before, nS, i) ->
             val flag = input[i] < input[i + 1] || input[i] == input[i + 1] && before
             Triple(flag, if (flag) nS + 1 else nS, i - 1)
-        }.take(input.size).toList().asReversed()
+        }.take(input.size)
 
-        return Pair(temp.first().second, temp.map { it.first })
+        return Pair(temp.last().second, temp.map { it.first }.toList().asReversed())
     }
 
     //isLMSの初期化とLMSのカウント
@@ -32,7 +32,7 @@ class SAIS_KT : SuffixArray() {
 
     // renumber処理部
     private fun renumber(sa: IntArray, N: Int, n: Int, isLMS: List<Boolean>): List<Int> {
-        val LMS = IntArray(n + 1)
+        val lms = IntArray(n + 1)
         val rev = IntArray(N)
 
         var i = 0
@@ -41,25 +41,24 @@ class SAIS_KT : SuffixArray() {
         while (i < N) {
             if (isLMS[i]) {
                 rev[i] = j
-                LMS[j] = i
+                lms[j] = i
                 j++
             }
-            if (isLMS[sa[i]])
-                sa[k++] = sa[i]
+            if (isLMS[sa[i]]) sa[k++] = sa[i]
             i++
         }
 
         for (l in 0 until n) sa[l] = rev[sa[l]]
 
-        LMS[n] = N - 1
+        lms[n] = N - 1
 
-        return LMS.toList()
+        return lms.toList()
     }
 
     // rename処理部
     private fun rename(input: List<Int>, sa: IntArray, n: Int, LMS: List<Int>): Pair<Int, List<Int>> {
         val s = IntArray(n)
-        var Knew = -1
+        var kNew = -1
         var i = 0
         var j = -1
         var l = -1
@@ -75,18 +74,17 @@ class SAIS_KT : SuffixArray() {
                     k++
                 }
             }
-            if (f)
-                s[c] = Knew
+            if (f) s[c] = kNew
             else {
                 l = LMS[c + 1] - LMS[c]
                 j = i
-                s[c] = ++Knew
+                s[c] = ++kNew
             }
             i++
         }
-        Knew++
+        kNew++
 
-        return Pair(Knew, s.toList())
+        return Pair(kNew, s.toList())
     }
 
     private fun rec(input: List<Int>, sa: IntArray, N: Int, K: Int): IntArray {
@@ -101,17 +99,17 @@ class SAIS_KT : SuffixArray() {
             val (n, isLMS) = makeLMS(isS)
 
             // renumber
-            val LMS = renumber(sa, N, n, isLMS)
+            val lms = renumber(sa, N, n, isLMS)
 
             // rename
-            val (Knew, s) = rename(input, sa, n, LMS)
+            val (kNew, s) = rename(input, sa, n, lms)
 
             Arrays.fill(sa, 0, N, -1)
             // unique
-            if (n == Knew) for (i in 0 until n) sa[s[i]] = LMS[i]
+            if (n == kNew) for (i in 0 until n) sa[s[i]] = lms[i]
             else { // not unique
-                rec(s, sa, n, Knew)
-                for (i in 0 until n) sa[i] = LMS[sa[i]]
+                rec(s, sa, n, kNew)
+                for (i in 0 until n) sa[i] = lms[sa[i]]
             }
             n
         } else {
