@@ -24,7 +24,7 @@ class SAIS_KT : SuffixArray() {
         var n = 0
         if (nS > 1) {
             // step 1
-            sort(input, sa, N, K, N, isS)
+            sort(input, sa, K, N, isS)
 
             // step 2
             run {
@@ -104,12 +104,13 @@ class SAIS_KT : SuffixArray() {
             sa[n++] = N - 1
 
         // step 3
-        sort(input, sa, N, K, n, isS)
+        sort(input, sa, K, n, isS)
 
         return sa
     }
 
-    private fun sort(input: IntArray, sa: IntArray, N: Int, K: Int, n: Int, isS: BooleanArray) {
+    private fun sort(input: IntArray, sa: IntArray, K: Int, n: Int, isS: BooleanArray) {
+        val N = input.size
         // make buckets
         val bkt = IntArray(K)
         input.forEach { bkt[it]++ }
@@ -138,8 +139,7 @@ class SAIS_KT : SuffixArray() {
         System.arraycopy(bkt, 0, idx, 0, K)
         for (i in N - 1 downTo 0) {
             val k = sa[i] - 1
-            if (k >= 0 && isS[k])
-                sa[--idx[input[k]]] = k
+            if (k >= 0 && isS[k]) sa[--idx[input[k]]] = k
         }
     }
 }
