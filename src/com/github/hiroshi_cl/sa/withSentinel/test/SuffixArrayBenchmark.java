@@ -47,7 +47,7 @@ public class SuffixArrayBenchmark {
 
 		private Map<String, Path> loadList() {
 			if (!dir.exists()) {
-				new TestDataDownloader().run();
+				//new TestDataDownloader().run();
 				new TestDataGenerator().run();
 			}
 
