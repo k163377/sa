@@ -23,7 +23,7 @@ public class TestConfigure {
 	public static final int RRP = 5;
 	public static final int REP = 5;
 	public static final int MIN = 13;
-	public static final int MAX = 38;
+	public static final int MAX = 13;
 	public static final int LEN = 50_000;
 	public static final int TIM = 20;
 	public static final int[] fibarray;
