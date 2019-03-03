@@ -8,8 +8,12 @@ import com.github.hiroshi_cl.sa.withSentinel.algorithm.*;
 import com.github.hiroshi_cl.sa.withSentinel.algorithm.extra.*;
 
 public class TestConfigure {
-	//public static final SuffixArray[] methods = { new NaiveStringSort(), new ManberMyers(), new BentleySedgewick(), new LarssonSadakane(), new ItohTanaka(), new KaerkkaeinenSanders(), new KoAluru(), new SAIS() };
-	public static final SuffixArray[] methods = { new SAIS() };
+	public static final SuffixArray[] methods = {
+			new ManberMyers(), new BentleySedgewick(), new LarssonSadakane(), new ItohTanaka(),
+			new KaerkkaeinenSanders(), new KoAluru(), new SAIS(), new SAIS_KT()
+	};
+	//public static final SuffixArray[] methods = { new SAIS(), new SAIS_KT() };
+	//public static final SuffixArray[] methods = { new SAIS_KT()};
 	public static final SuffixArray[] LSmethods = { new LarssonSadakane(), new LarssonSadakaneWithoutSkipping() };
 	public static final SuffixArray[] KAmethods = { new KoAluru(), new KoAluruUsingOnlySTypes(),
 			new KoAluruUsingOnlyLTypes() };
