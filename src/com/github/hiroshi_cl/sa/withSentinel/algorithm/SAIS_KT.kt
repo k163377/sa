@@ -22,38 +22,6 @@ class SAIS_KT : SuffixArray() {
         return nS
     }
 
-    //isLMSの初期化とカウント
-    private fun makeLMS(isS: List<Boolean>, isLMS: BooleanArray): Int {
-        var n = 0
-        for (i in 0 until isS.size) {
-            isLMS[i] = isS[i] && (i == 0 || !isS[i - 1])
-            if (isLMS[i]) n++
-        }
-        return n
-    }
-
-    private fun rec(input: IntArray, sa: IntArray, N: Int, K: Int): IntArray {
-        // determine L or S and count
-        val isS = BooleanArray(N)
-        val nS = makeS(input.toList(), isS) //isSの初期化とSのカウント
-
-        val n = if (nS > 1) {
-            // step 1
-            sort(input, sa, K, N, isS)
-
-            // step 2
-            step2(input, sa, N, isS)
-        } else {
-            sa[0] = N - 1
-            1
-        }
-
-        // step 3
-        sort(input, sa, K, n, isS)
-
-        return sa
-    }
-
     private fun step2(input: IntArray, sa: IntArray, N: Int, isS: BooleanArray): Int {
         val isLMS = BooleanArray(N)
         val n = makeLMS(isS.toList(), isLMS)
@@ -122,6 +90,38 @@ class SAIS_KT : SuffixArray() {
         }
 
         return n
+    }
+
+    //isLMSの初期化とカウント
+    private fun makeLMS(isS: List<Boolean>, isLMS: BooleanArray): Int {
+        var n = 0
+        for (i in 0 until isS.size) {
+            isLMS[i] = isS[i] && (i == 0 || !isS[i - 1])
+            if (isLMS[i]) n++
+        }
+        return n
+    }
+
+    private fun rec(input: IntArray, sa: IntArray, N: Int, K: Int): IntArray {
+        // determine L or S and count
+        val isS = BooleanArray(N)
+        val nS = makeS(input.toList(), isS) //isSの初期化とSのカウント
+
+        val n = if (nS > 1) {
+            // step 1
+            sort(input, sa, K, N, isS)
+
+            // step 2
+            step2(input, sa, N, isS)
+        } else {
+            sa[0] = N - 1
+            1
+        }
+
+        // step 3
+        sort(input, sa, K, n, isS)
+
+        return sa
     }
 
     private fun sort(input: IntArray, sa: IntArray, K: Int, n: Int, isS: BooleanArray) {
