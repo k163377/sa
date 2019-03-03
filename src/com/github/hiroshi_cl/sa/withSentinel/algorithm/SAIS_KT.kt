@@ -32,7 +32,7 @@ class SAIS_KT : SuffixArray() {
         return n
     }
 
-    private fun step2(input: IntArray, sa: IntArray, N: Int, isS: BooleanArray): Int {
+    private fun step2(input: IntArray, sa: IntArray, N: Int, isS: List<Boolean>): Int {
         val isLMS = BooleanArray(N)
         val n = makeLMS(isS.toList(), isLMS)
 
@@ -103,8 +103,10 @@ class SAIS_KT : SuffixArray() {
 
     private fun rec(input: IntArray, sa: IntArray, N: Int, K: Int): IntArray {
         // determine L or S and count
-        val isS = BooleanArray(N)
-        val nS = makeS(input.toList(), isS) //isSの初期化とSのカウント
+        //val (nS, isS) = makeS(input.toList())
+        val temp = BooleanArray(N)
+        val nS = makeS(input.toList(), temp)
+        val isS = temp.toList()
 
         val n = if (nS > 1) {
             // step 1
@@ -123,7 +125,7 @@ class SAIS_KT : SuffixArray() {
         return sa
     }
 
-    private fun sort(input: IntArray, sa: IntArray, K: Int, n: Int, isS: BooleanArray) {
+    private fun sort(input: IntArray, sa: IntArray, K: Int, n: Int, isS: List<Boolean>) {
         val N = input.size
         // make buckets
         val bkt = IntArray(K)
