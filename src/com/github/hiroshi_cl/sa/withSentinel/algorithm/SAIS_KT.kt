@@ -27,81 +27,76 @@ class SAIS_KT : SuffixArray() {
             sort(input, sa, K, N, isS)
 
             // step 2
+            val isLMS = BooleanArray(N)
+            for (i in 0 until N) {
+                isLMS[i] = isS[i] && (i == 0 || !isS[i - 1])
+                if (isLMS[i]) n++
+            }
+
+            // renumber
+            val LMS = IntArray(n + 1)
             run {
-                val isLMS = BooleanArray(N)
-                for (i in 0 until N) {
-                    isLMS[i] = isS[i] && (i == 0 || !isS[i - 1])
-                    if (isLMS[i]) n++
-                }
-
-                // renumber
-                val LMS = IntArray(n + 1)
-                run {
-                    val rev = IntArray(N)
-                    run {
-                        var i = 0
-                        var j = 0
-                        var k = 0
-                        while (i < N) {
-                            if (isLMS[i]) {
-                                rev[i] = j
-                                LMS[j] = i
-                                j++
-                            }
-                            if (isLMS[sa[i]])
-                                sa[k++] = sa[i]
-                            i++
-                        }
-                    }
-                    for (i in 0 until n)
-                        sa[i] = rev[sa[i]]
-                }
-                LMS[n] = N - 1
-
-                // rename
-                val s = IntArray(n)
-                var Knew = -1
+                val rev = IntArray(N)
                 run {
                     var i = 0
-                    var j = -1
-                    var l = -1
-                    while (i < n) {
-                        val c = sa[i]
-                        var f = LMS[c + 1] - LMS[c] == l
-                        if (f) {
-                            val p = LMS[sa[i]]
-                            val q = LMS[sa[j]]
-                            var k = 0
-                            while (f && k <= l) {
-                                f = input[p + k] == input[q + k]
-                                k++
-                            }
+                    var j = 0
+                    var k = 0
+                    while (i < N) {
+                        if (isLMS[i]) {
+                            rev[i] = j
+                            LMS[j] = i
+                            j++
                         }
-                        if (f)
-                            s[c] = Knew
-                        else {
-                            l = LMS[c + 1] - LMS[c]
-                            j = i
-                            s[c] = ++Knew
-                        }
+                        if (isLMS[sa[i]])
+                            sa[k++] = sa[i]
                         i++
                     }
                 }
-                Knew++
-
-                Arrays.fill(sa, 0, N, -1)
-                // unique
-                if (n == Knew)
-                    for (i in 0 until n)
-                        sa[s[i]] = LMS[i]
-                else {
-                    rec(s, sa, n, Knew)
-                    for (i in 0 until n)
-                        sa[i] = LMS[sa[i]]
-                }// not unique
+                for (i in 0 until n)
+                    sa[i] = rev[sa[i]]
             }
-        } else
-            sa[n++] = N - 1
+            LMS[n] = N - 1
+
+            // rename
+            val s = IntArray(n)
+            var Knew = -1
+            run {
+                var i = 0
+                var j = -1
+                var l = -1
+                while (i < n) {
+                    val c = sa[i]
+                    var f = LMS[c + 1] - LMS[c] == l
+                    if (f) {
+                        val p = LMS[sa[i]]
+                        val q = LMS[sa[j]]
+                        var k = 0
+                        while (f && k <= l) {
+                            f = input[p + k] == input[q + k]
+                            k++
+                        }
+                    }
+                    if (f)
+                        s[c] = Knew
+                    else {
+                        l = LMS[c + 1] - LMS[c]
+                        j = i
+                        s[c] = ++Knew
+                    }
+                    i++
+                }
+            }
+            Knew++
+
+            Arrays.fill(sa, 0, N, -1)
+            // unique
+            if (n == Knew) for (i in 0 until n) sa[s[i]] = LMS[i]
+            else { // not unique
+                rec(s, sa, n, Knew)
+                for (i in 0 until n) sa[i] = LMS[sa[i]]
+            }
+
+        } else sa[n++] = N - 1
 
         // step 3
         sort(input, sa, K, n, isS)
