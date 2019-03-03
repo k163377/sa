@@ -21,6 +21,15 @@ class SAIS_KT : SuffixArray() {
         return Pair(temp.first().second, temp.map { it.first })
     }
 
+    private fun makeLMS(isS: List<Boolean>): Pair<Int, List<Boolean>> {
+        val temp = generateSequence(Triple(isS[0], if(isS[0]) 1 else 0, 1)) { (_, count, i) ->
+            val flag = isS[i] && !isS[i - 1]
+            Triple(flag, if (flag) count+1 else count, i+1)
+        }.take(isS.size)
+
+        return Pair(temp.last().second, temp.map { it.first }.toList())
+    }
+
     //isLMSの初期化とカウント
     private fun makeLMS(isS: List<Boolean>, isLMS: BooleanArray): Int {
         var n = 0
@@ -32,8 +41,7 @@ class SAIS_KT : SuffixArray() {
     }
 
     private fun step2(input: IntArray, sa: IntArray, N: Int, isS: List<Boolean>): Int {
-        val isLMS = BooleanArray(N)
-        val n = makeLMS(isS.toList(), isLMS)
+        val (n, isLMS) = makeLMS(isS)
 
         // renumber
         val LMS = IntArray(n + 1)
