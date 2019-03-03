@@ -11,15 +11,21 @@ class SAIS_KT : SuffixArray() {
         return rec(s, sa, cs.size, 1 shl Character.SIZE)
     }
 
-    private fun rec(input: IntArray, sa: IntArray, N: Int, K: Int): IntArray {
-        // determine L or S and count
-        val isS = BooleanArray(N)
-        isS[N - 1] = true
+    //isSの初期化とSのカウント
+    private fun makeS(input: IntArray, isS: BooleanArray): Int {
+        isS[isS.lastIndex] = true
         var nS = 1
-        for (i in N - 2 downTo 0) {
+        for (i in isS.size - 2 downTo 0) {
             isS[i] = input[i] < input[i + 1] || input[i] == input[i + 1] && isS[i + 1]
             if (isS[i]) nS++
         }
+        return nS
+    }
+
+    private fun rec(input: IntArray, sa: IntArray, N: Int, K: Int): IntArray {
+        // determine L or S and count
+        val isS = BooleanArray(N)
+        val nS = makeS(input, isS) //isSの初期化とSのカウント
 
         var n = 0
         if (nS > 1) {
