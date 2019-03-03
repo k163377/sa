@@ -13,12 +13,12 @@ class SAIS_KT : SuffixArray() {
 
     //isSの初期化とSのカウント
     private fun makeS(input: List<Int>): Pair<Int, List<Boolean>> {
-        val temp = generateSequence(Triple(true, input.size - 2, 1)) { (before, i, nS) ->
+        val temp = generateSequence(Triple(true, 1, input.size - 2)) { (before, nS, i) ->
             val flag = input[i] < input[i + 1] || input[i] == input[i + 1] && before
-            Triple(flag, i - 1, if (flag) nS + 1 else nS )
+            Triple(flag, if (flag) nS + 1 else nS, i - 1)
         }.take(input.size).toList().asReversed()
 
-        return Pair(temp.first().third, temp.map { it.first })
+        return Pair(temp.first().second, temp.map { it.first })
     }
 
     //isLMSの初期化とカウント
