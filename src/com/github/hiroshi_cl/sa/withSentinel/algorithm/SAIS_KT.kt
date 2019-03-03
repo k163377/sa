@@ -20,40 +20,47 @@ class SAIS_KT : SuffixArray() {
         return Pair(temp.first().second, temp.map { it.first })
     }
 
+    //isLMSの初期化とLMSのカウント
     private fun makeLMS(isS: List<Boolean>): Pair<Int, List<Boolean>> {
-        val temp = generateSequence(Triple(isS[0], if(isS[0]) 1 else 0, 1)) { (_, count, i) ->
+        val temp = generateSequence(Triple(isS[0], if (isS[0]) 1 else 0, 1)) { (_, count, i) ->
             val flag = isS[i] && !isS[i - 1]
-            Triple(flag, if (flag) count+1 else count, i+1)
+            Triple(flag, if (flag) count + 1 else count, i + 1)
         }.take(isS.size)
 
         return Pair(temp.last().second, temp.map { it.first }.toList())
+    }
+
+    // renumber処理部
+    private fun renumber(sa: IntArray, N: Int, n: Int, isLMS: List<Boolean>): List<Int> {
+        val LMS = IntArray(n + 1)
+        val rev = IntArray(N)
+
+        var i = 0
+        var j = 0
+        var k = 0
+        while (i < N) {
+            if (isLMS[i]) {
+                rev[i] = j
+                LMS[j] = i
+                j++
+            }
+            if (isLMS[sa[i]])
+                sa[k++] = sa[i]
+            i++
+        }
+
+        for (l in 0 until n) sa[l] = rev[sa[l]]
+
+        LMS[n] = N - 1
+
+        return LMS.toList()
     }
 
     private fun step2(input: List<Int>, sa: IntArray, N: Int, isS: List<Boolean>): Int {
         val (n, isLMS) = makeLMS(isS)
 
         // renumber
-        val LMS = IntArray(n + 1)
-        run {
-            val rev = IntArray(N)
-            run {
-                var i = 0
-                var j = 0
-                var k = 0
-                while (i < N) {
-                    if (isLMS[i]) {
-                        rev[i] = j
-                        LMS[j] = i
-                        j++
-                    }
-                    if (isLMS[sa[i]])
-                        sa[k++] = sa[i]
-                    i++
-                }
-            }
-            for (i in 0 until n) sa[i] = rev[sa[i]]
-        }
-        LMS[n] = N - 1
+        val LMS = renumber(sa, N, n, isLMS)
 
         // rename
         val s = IntArray(n)
