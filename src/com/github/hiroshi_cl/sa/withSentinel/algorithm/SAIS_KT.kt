@@ -9,17 +9,9 @@ class SAIS_KT : SuffixArray() {
     override fun saInternal(cs: CharArray, sa: IntArray): IntArray {
         val N = cs.size
         val s = IntArray(N)
-        for (i in 0 until N)
-            s[i] = cs[i].toInt()
-        try {
-            return rec(s, sa, N, 1 shl Character.SIZE)
-        } catch (e: ArrayIndexOutOfBoundsException) {
-            return rec(s, sa, N, 1 shl Character.SIZE)
-            /*println("//////////////////////////////////////////////////////////////////////////")
-            println(cs)
-            println(sa)
-            throw e*/
-        }
+        for (i in 0 until N) s[i] = cs[i].toInt()
+
+        return rec(s, sa, N, 1 shl Character.SIZE)
     }
 
     private fun rec(input: IntArray, sa: IntArray, N: Int, K: Int): IntArray {
@@ -28,8 +20,8 @@ class SAIS_KT : SuffixArray() {
         var nS = 1
         isS[N - 1] = true
         for (i in N - 2 downTo 0) {
-            isS[i] = input[i] < input[i + 1]
-            if (isS[i] || input[i] == input[i + 1] && isS[i + 1]) nS++
+            isS[i] = input[i] < input[i + 1] || input[i] == input[i + 1] && isS[i + 1]
+            if (isS[i]) nS++
         }
 
         var n = 0
@@ -41,8 +33,8 @@ class SAIS_KT : SuffixArray() {
             run {
                 val isLMS = BooleanArray(N)
                 for (i in 0 until N) {
-                    isLMS[i] = isS[i]
-                    if (isLMS[i] && (i == 0 || !isS[i - 1])) n++
+                    isLMS[i] = isS[i] && (i == 0 || !isS[i - 1])
+                    if (isLMS[i]) n++
                 }
 
                 // renumber
