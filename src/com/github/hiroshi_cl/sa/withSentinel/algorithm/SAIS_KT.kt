@@ -56,6 +56,39 @@ class SAIS_KT : SuffixArray() {
         return LMS.toList()
     }
 
+    // rename処理部
+    private fun rename(input: List<Int>, sa: IntArray, n: Int, LMS: List<Int>): Pair<Int, List<Int>> {
+        val s = IntArray(n)
+        var Knew = -1
+        var i = 0
+        var j = -1
+        var l = -1
+        while (i < n) {
+            val c = sa[i]
+            var f = LMS[c + 1] - LMS[c] == l
+            if (f) {
+                val p = LMS[sa[i]]
+                val q = LMS[sa[j]]
+                var k = 0
+                while (f && k <= l) {
+                    f = input[p + k] == input[q + k]
+                    k++
+                }
+            }
+            if (f)
+                s[c] = Knew
+            else {
+                l = LMS[c + 1] - LMS[c]
+                j = i
+                s[c] = ++Knew
+            }
+            i++
+        }
+        Knew++
+
+        return Pair(Knew, s.toList())
+    }
+
     private fun step2(input: List<Int>, sa: IntArray, N: Int, isS: List<Boolean>): Int {
         val (n, isLMS) = makeLMS(isS)
 
@@ -63,35 +96,7 @@ class SAIS_KT : SuffixArray() {
         val LMS = renumber(sa, N, n, isLMS)
 
         // rename
-        val s = IntArray(n)
-        var Knew = -1
-        run {
-            var i = 0
-            var j = -1
-            var l = -1
-            while (i < n) {
-                val c = sa[i]
-                var f = LMS[c + 1] - LMS[c] == l
-                if (f) {
-                    val p = LMS[sa[i]]
-                    val q = LMS[sa[j]]
-                    var k = 0
-                    while (f && k <= l) {
-                        f = input[p + k] == input[q + k]
-                        k++
-                    }
-                }
-                if (f)
-                    s[c] = Knew
-                else {
-                    l = LMS[c + 1] - LMS[c]
-                    j = i
-                    s[c] = ++Knew
-                }
-                i++
-            }
-        }
-        Knew++
+        val (Knew, s) = rename(input, sa, n, LMS)
 
         Arrays.fill(sa, 0, N, -1)
         // unique
