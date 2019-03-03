@@ -22,6 +22,16 @@ class SAIS_KT : SuffixArray() {
         return nS
     }
 
+    //isLMSの初期化とカウント
+    private fun makeLMS(isS: List<Boolean>, isLMS: BooleanArray): Int {
+        var n = 0
+        for (i in 0 until isS.size) {
+            isLMS[i] = isS[i] && (i == 0 || !isS[i - 1])
+            if (isLMS[i]) n++
+        }
+        return n
+    }
+
     private fun step2(input: IntArray, sa: IntArray, N: Int, isS: BooleanArray): Int {
         val isLMS = BooleanArray(N)
         val n = makeLMS(isS.toList(), isLMS)
@@ -45,8 +55,7 @@ class SAIS_KT : SuffixArray() {
                     i++
                 }
             }
-            for (i in 0 until n)
-                sa[i] = rev[sa[i]]
+            for (i in 0 until n) sa[i] = rev[sa[i]]
         }
         LMS[n] = N - 1
 
@@ -89,16 +98,6 @@ class SAIS_KT : SuffixArray() {
             for (i in 0 until n) sa[i] = LMS[sa[i]]
         }
 
-        return n
-    }
-
-    //isLMSの初期化とカウント
-    private fun makeLMS(isS: List<Boolean>, isLMS: BooleanArray): Int {
-        var n = 0
-        for (i in 0 until isS.size) {
-            isLMS[i] = isS[i] && (i == 0 || !isS[i - 1])
-            if (isLMS[i]) n++
-        }
         return n
     }
 
