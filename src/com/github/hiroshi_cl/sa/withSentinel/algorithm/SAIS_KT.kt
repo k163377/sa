@@ -7,8 +7,7 @@ import com.github.hiroshi_cl.sa.withSentinel.SuffixArray
 class SAIS_KT : SuffixArray() {
 
     override fun saInternal(cs: CharArray, sa: IntArray): IntArray {
-        val s = cs.map { it.toInt() }.toIntArray()
-        return rec(s, sa, cs.size, 1 shl Character.SIZE)
+        return rec(cs.map { it.toInt() }.toList(), sa, cs.size, 1 shl Character.SIZE)
     }
 
     //isSの初期化とSのカウント
@@ -30,17 +29,7 @@ class SAIS_KT : SuffixArray() {
         return Pair(temp.last().second, temp.map { it.first }.toList())
     }
 
-    //isLMSの初期化とカウント
-    private fun makeLMS(isS: List<Boolean>, isLMS: BooleanArray): Int {
-        var n = 0
-        for (i in 0 until isS.size) {
-            isLMS[i] = isS[i] && (i == 0 || !isS[i - 1])
-            if (isLMS[i]) n++
-        }
-        return n
-    }
-
-    private fun step2(input: IntArray, sa: IntArray, N: Int, isS: List<Boolean>): Int {
+    private fun step2(input: List<Int>, sa: IntArray, N: Int, isS: List<Boolean>): Int {
         val (n, isLMS) = makeLMS(isS)
 
         // renumber
@@ -101,14 +90,14 @@ class SAIS_KT : SuffixArray() {
         // unique
         if (n == Knew) for (i in 0 until n) sa[s[i]] = LMS[i]
         else { // not unique
-            rec(s, sa, n, Knew)
+            rec(s.toList(), sa, n, Knew)
             for (i in 0 until n) sa[i] = LMS[sa[i]]
         }
 
         return n
     }
 
-    private fun rec(input: IntArray, sa: IntArray, N: Int, K: Int): IntArray {
+    private fun rec(input: List<Int>, sa: IntArray, N: Int, K: Int): IntArray {
         // determine L or S and count
         val (nS, isS) = makeS(input.toList())
 
@@ -129,7 +118,7 @@ class SAIS_KT : SuffixArray() {
         return sa
     }
 
-    private fun sort(input: IntArray, sa: IntArray, K: Int, n: Int, isS: List<Boolean>) {
+    private fun sort(input: List<Int>, sa: IntArray, K: Int, n: Int, isS: List<Boolean>) {
         val N = input.size
         // make buckets
         val bkt = IntArray(K)
