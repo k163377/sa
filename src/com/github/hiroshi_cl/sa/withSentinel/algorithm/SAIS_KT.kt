@@ -89,36 +89,31 @@ class SAIS_KT : SuffixArray() {
         return Pair(Knew, s.toList())
     }
 
-    private fun step2(input: List<Int>, sa: IntArray, N: Int, isS: List<Boolean>): Int {
-        val (n, isLMS) = makeLMS(isS)
-
-        // renumber
-        val LMS = renumber(sa, N, n, isLMS)
-
-        // rename
-        val (Knew, s) = rename(input, sa, n, LMS)
-
-        Arrays.fill(sa, 0, N, -1)
-        // unique
-        if (n == Knew) for (i in 0 until n) sa[s[i]] = LMS[i]
-        else { // not unique
-            rec(s.toList(), sa, n, Knew)
-            for (i in 0 until n) sa[i] = LMS[sa[i]]
-        }
-
-        return n
-    }
-
     private fun rec(input: List<Int>, sa: IntArray, N: Int, K: Int): IntArray {
         // determine L or S and count
-        val (nS, isS) = makeS(input.toList())
+        val (nS, isS) = makeS(input)
 
         val n = if (nS > 1) {
             // step 1
             sort(input, sa, K, N, isS)
 
             // step 2
-            step2(input, sa, N, isS)
+            val (n, isLMS) = makeLMS(isS)
+
+            // renumber
+            val LMS = renumber(sa, N, n, isLMS)
+
+            // rename
+            val (Knew, s) = rename(input, sa, n, LMS)
+
+            Arrays.fill(sa, 0, N, -1)
+            // unique
+            if (n == Knew) for (i in 0 until n) sa[s[i]] = LMS[i]
+            else { // not unique
+                rec(s, sa, n, Knew)
+                for (i in 0 until n) sa[i] = LMS[sa[i]]
+            }
+            n
         } else {
             sa[0] = N - 1
             1
