@@ -4,14 +4,22 @@ import java.util.Arrays
 
 import com.github.hiroshi_cl.sa.withSentinel.SuffixArray
 
-class SAIS : SuffixArray() {
+class SAIS_KT : SuffixArray() {
 
     override fun saInternal(cs: CharArray, sa: IntArray): IntArray {
         val N = cs.size
         val s = IntArray(N)
         for (i in 0 until N)
             s[i] = cs[i].toInt()
-        return rec(s, sa, N, 1 shl Character.SIZE)
+        try {
+            return rec(s, sa, N, 1 shl Character.SIZE)
+        } catch (e: ArrayIndexOutOfBoundsException) {
+            return rec(s, sa, N, 1 shl Character.SIZE)
+            /*println("//////////////////////////////////////////////////////////////////////////")
+            println(cs)
+            println(sa)
+            throw e*/
+        }
     }
 
     private fun rec(input: IntArray, sa: IntArray, N: Int, K: Int): IntArray {
